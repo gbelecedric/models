@@ -10,6 +10,7 @@
 * Contact
 * Horraire
 
+
 ### Mes_models
 
 # blog_model
@@ -82,12 +83,25 @@ class MCategorie(Timemodels):
     nom = models.CharField(max_length=255)
     
 class Recette(Timemodels):
-
+    categorie = models.ForeignKey(MCategorie,on_delete=models.CASCADE, related_name="cate")
     nom = models.CharField(max_length=255)
     price = models.FloatField()
     ingrediens =  models.TextField()
     image = models.ImageField(upload_to='image',)
 
+ 
+class Panier(models.Model):
+    user_id =  models.ForeignKey(User,on_delete=models.CASCADE, related_name="user")
+    recette = models.ManyToMany(recette)
+    date_add = models.DateTimeField(auto_now_add=True)
+    regler = models.BooleanField(default=False)
+   
+class Commande(models.Model):
+    panier_id = models.ForeignKey(Panier,on_delete=models.CASCADE, related_name="panier_id")
+    mode_payement = models.CharField(choices=PAYEMENT_CHOICES, max_length=2)
+    country = CountryField(multiple=False)
+    date_add =  models.DateTimeField(auto_now_add=True)
+    
 ```   
 
 # Services_app(about)
@@ -126,7 +140,6 @@ class reservation(Timemodels):
     date = models.CharField()
     time = models.TimeField()
     person = models.IntegerField()
-
 
 ``` 
 # Horaire..
